@@ -172,7 +172,7 @@ covid19 <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/mas
 ```
 
 ```
-## Rows: 40382 Columns: 5
+## Rows: 40494 Columns: 5
 ```
 
 ```
@@ -225,13 +225,251 @@ These exercises will reiterate what you learned in the "Mapping data with R" tut
 
 ### Starbucks locations (`ggmap`)
 
-  1. Add the `Starbucks` locations to a world map. Add an aesthetic to the world map that sets the color of the points according to the ownership type. What, if anything, can you deduce from this visualization?  
+  1. Add the `Starbucks` locations to a world map. Add an aesthetic to the world map that sets the color of the points according to the ownership type. What, if anything, can you deduce from this visualization?
+  
 
-  2. Construct a new map of Starbucks locations in the Twin Cities metro area (approximately the 5 county metro area).  
+```r
+starbs_map <- get_stamenmap(
+    bbox = c(left = -185, bottom = -60, right = 203, top = 84), 
+    maptype = "terrain",
+    zoom = 2
+)
+```
+
+```
+## Source : http://tile.stamen.com/terrain/2/-1/0.png
+```
+
+```
+## Service Unavailable (HTTP 503). Failed to aquire tile /terrain/2/-1/0.png.
+## Source : http://tile.stamen.com/terrain/2/0/0.png
+## Source : http://tile.stamen.com/terrain/2/1/0.png
+## Source : http://tile.stamen.com/terrain/2/2/0.png
+## Source : http://tile.stamen.com/terrain/2/3/0.png
+## Source : http://tile.stamen.com/terrain/2/4/0.png
+## Not Found (HTTP 404). Failed to aquire tile /terrain/2/4/0.png.
+## Source : http://tile.stamen.com/terrain/2/-1/1.png
+## Service Unavailable (HTTP 503). Failed to aquire tile /terrain/2/-1/1.png.
+## Source : http://tile.stamen.com/terrain/2/0/1.png
+## Source : http://tile.stamen.com/terrain/2/1/1.png
+## Source : http://tile.stamen.com/terrain/2/2/1.png
+## Source : http://tile.stamen.com/terrain/2/3/1.png
+## Source : http://tile.stamen.com/terrain/2/4/1.png
+## Not Found (HTTP 404). Failed to aquire tile /terrain/2/4/1.png.
+## Source : http://tile.stamen.com/terrain/2/-1/2.png
+## Service Unavailable (HTTP 503). Failed to aquire tile /terrain/2/-1/2.png.
+## Source : http://tile.stamen.com/terrain/2/0/2.png
+## Source : http://tile.stamen.com/terrain/2/1/2.png
+## Source : http://tile.stamen.com/terrain/2/2/2.png
+## Source : http://tile.stamen.com/terrain/2/3/2.png
+## Source : http://tile.stamen.com/terrain/2/4/2.png
+## Not Found (HTTP 404). Failed to aquire tile /terrain/2/4/2.png.
+```
+
+```r
+ggmap(starbs_map) +
+  geom_point(data = Starbucks, 
+             aes(x = Longitude, y = Latitude, color = `Ownership Type`),
+             size = .5) +
+  theme_map() +
+  theme(legend.background = element_blank())
+```
+
+```
+## Warning: Removed 1 rows containing missing values (geom_point).
+```
+
+![](04_exercises_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+  
+  **From this visualization, we can see that the majority of Starbucks locations are in the continental US, Europe, and East Asia. The US appears to have predominantly Licensed and Company Owned locations while Europe and East Asia also have Joint Venture locations.**
+
+  2. Construct a new map of Starbucks locations in the Twin Cities metro area (approximately the 5 county metro area).
+  
+
+```r
+starbs_mn_map <- get_stamenmap(
+    bbox = c(left = -93.75, bottom = 44.6, right = -92.6, top = 45.35), 
+    maptype = "terrain",
+    zoom = 10
+)
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/245/366.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/246/366.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/247/366.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/248/366.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/245/367.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/246/367.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/247/367.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/248/367.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/245/368.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/246/368.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/247/368.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/248/368.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/245/369.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/246/369.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/247/369.png
+```
+
+```
+## Source : http://tile.stamen.com/terrain/10/248/369.png
+```
+
+```r
+ggmap(starbs_mn_map) +
+  geom_point(data = Starbucks, 
+             aes(x = Longitude, y = Latitude, color = `Ownership Type`),
+             size = .5) +
+  theme_map() +
+  theme(legend.background = element_blank()) +
+  annotate("text", x = -93.1691, y = 44.9379, label = "Macalester College", size = 2, color = "blue") +
+  annotate("point", x = -93.1691, y = 44.9379, size = .5, color = "blue")
+```
+
+```
+## Warning: Removed 25450 rows containing missing values (geom_point).
+```
+
+![](04_exercises_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
 
   3. In the Twin Cities plot, play with the zoom number. What does it do?  (just describe what it does - don't actually include more than one map).  
+  
+  **Increasing the zoom shows more details, such as all the smaller county roads and some neighborhood streets in addition to larger roads and highways. Decreasing the zoom shows fewer details. Decreasing the zoom from 10 to 9 caused only major interstates to be shown and the names of areas are shown with less precision.**
 
   4. Try a couple different map types (see `get_stamenmap()` in help and look at `maptype`). Include a map with one of the other map types.  
+  
+
+```r
+starbs_mn_map <- get_stamenmap(
+    bbox = c(left = -93.75, bottom = 44.6, right = -92.6, top = 45.35), 
+    maptype = "toner-hybrid",
+    zoom = 10
+)
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/245/366.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/246/366.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/247/366.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/248/366.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/245/367.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/246/367.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/247/367.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/248/367.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/245/368.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/246/368.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/247/368.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/248/368.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/245/369.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/246/369.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/247/369.png
+```
+
+```
+## Source : http://tile.stamen.com/toner-hybrid/10/248/369.png
+```
+
+```r
+ggmap(starbs_mn_map) +
+  geom_point(data = Starbucks, 
+             aes(x = Longitude, y = Latitude, color = `Ownership Type`),
+             size = .5) +
+  theme_map() +
+  theme(legend.background = element_blank())
+```
+
+```
+## Warning: Removed 25450 rows containing missing values (geom_point).
+```
+
+![](04_exercises_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 
   5. Add a point to the map that indicates Macalester College and label it appropriately. There are many ways you can do think, but I think it's easiest with the `annotate()` function (see `ggplot2` cheatsheet).
 
@@ -273,8 +511,43 @@ starbucks_with_2018_pop_est <-
 ```
 
   6. **`dplyr` review**: Look through the code above and describe what each line of code does.
+  
+**Line 1: Reads in a csv file to Rstudio and names it "census_pop_est_2018" **
+**Line 2: Splits the string state variable into two variables in order to remove the dot from the beginning of each state name**
+**Line 3: Removes the variable "dot" from the data set**
+**Line 4: Creates a new state variable that overwrites the old one. The state names in the new "state" variable are made to be all lower case**
+**Lines 6-9: Joins the two data sets "starbucks_us_by_state" and "census_pop_est_2018" by the variables "state_name" and "state" (they become one variable called state_name in new data set). The new data set created is named "starbucks_with_2018_pop_est.**
+**Line 10: Creates a new variable called "starbucks_per_10000" which divides the number of starbucks in a state by the estimated population of the state in 2018  then multiplies that amount by 10000**
 
   7. Create a choropleth map that shows the number of Starbucks per 10,000 people on a map of the US. Use a new fill color, add points for all Starbucks in the US (except Hawaii and Alaska), add an informative title for the plot, and include a caption that says who created the plot (you!). Make a conclusion about what you observe.
+  
+
+```r
+states_map <- map_data("state")
+
+starbucks_with_2018_pop_est %>% 
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = state_name,
+               fill = starbucks_per_10000)) +
+  geom_point(data = Starbucks %>% filter(`Country` == "US" & `State/Province` != "HI" & `State/Province` != "AK"),
+             aes(x = Longitude, y = Latitude),
+             size = .05,
+             alpha = .2, 
+             color = "goldenrod") +
+  expand_limits(x = states_map$long, y = states_map$lat) + 
+  theme_map() + 
+  labs(title = "Starbucks US Locations Showing States' Starbucks Location per 10000",
+       fill = "",
+       caption = "Created by Emily Bergin") +
+  scale_fill_viridis_c(option = "viridis") +
+  theme_map() +
+  theme(legend.background = element_blank())
+```
+
+![](04_exercises_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+  **There appears to be significantly more Starbucks locations on the West Coast and in Colorado than in the rest of the US. The majority of Starbucks locations tend to be clumped around large metro areas.**
 
 ### A few of your favorite things (`leaflet`)
 
@@ -287,6 +560,21 @@ starbucks_with_2018_pop_est <-
   * Connect all your locations together with a line in a meaningful way (you may need to order them differently in the original data).  
   
   * If there are other variables you want to add that could enhance your plot, do that now.  
+  
+
+```r
+leaflet(data = favorite_stp_by_lisa) %>% 
+  addTiles() %>% 
+  addMarkers(lng = ~long, 
+             lat = ~lat, 
+             label = ~place) 
+```
+
+```{=html}
+<div id="htmlwidget-02ef07b87aa7d4af966a" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-02ef07b87aa7d4af966a">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727],[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["Home","Macalester College","Adams Spanish Immersion","Spirit Gymnastics","Bama &amp; Bapa","Now Bikes","Dance Spectrum","Pizza Luce","Brunson's"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[44.9237914,44.9700727],"lng":[-93.1712321,-93.0753863]}},"evals":[],"jsHooks":[]}</script>
+```
+
   
 ## Revisiting old datasets
 
